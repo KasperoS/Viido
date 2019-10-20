@@ -13,12 +13,8 @@ def set_status():
     print("SETTING STATUS TO", mode)
     if mode == "off":
         projektor.off()
-    elif mode == "hdmi":
-        projektor.on_hdmi()
-    elif mode == "vga":
-        projektor.on_vga()
-
-
+    elif mode == "on":
+        projektor.force_on_default_hdmi()
     return "OK"
 
 

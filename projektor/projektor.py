@@ -2,6 +2,8 @@
 import serial
 from time import sleep
 
+"""
+Legacy Code
 def on_hdmi():
     p = Projektor("/dev/ttyS0")
     print("HDMI ON")
@@ -39,22 +41,34 @@ def on_vga():
         sleep(1)
     print("DONE")
     p.close()
+"""
 
 
 def get_status():
     p = Projektor("/dev/ttyS0")
     if p.get_power() == "OFF":
         status = "off"
-
     else:
-        status = p.get_source()
+        status = "hdmi"
     print("DONE")
     p.close()
     return status
 
+
+def force_on_default_hdmi():
+    """Korneti seriali bruteforce lahti, eu tee projektor lahti,
+    kinni meetod kirjutatud purjus peaga kell 7 hommikul lapis"""
+    p = Projektor("/dev/ttyS0")
+    print("HDMI ON")
+    p.on()
+    print("DONE")
+    p.close()
+
+
 def off():
     p = Projektor("/dev/ttyS0")
     p.off()
+
 
 class Projektor:
     def __init__(self, device):
@@ -74,10 +88,10 @@ class Projektor:
 
     def hdmi(self):
         self.ser.write(b"\r*sour=hdmi#\r")
-
+    """
     def vga(self):
         self.ser.write(b"\r*sour=RGB2#\r")
-
+    """
     def get_source(self):
         self.ser.read()
         self.ser.write(b"\r*sour=?#\r")
@@ -89,8 +103,6 @@ class Projektor:
                 source = self.ser.read(4)
                 if source == b"HDMI":
                     return "hdmi"
-                elif source == b"RGB2":
-                    return "vga"
             elif not c:
                 break
 
@@ -110,6 +122,8 @@ class Projektor:
                     return "ON"
                 elif status == b"OFF":
                     return "OFF"
+                else:
+                    return "Miskit laks putsi"
 
             elif not c:
                 break
@@ -118,6 +132,8 @@ class Projektor:
 if __name__ == "__main__":
 
     p = Projektor("/dev/ttyS0")
+    force_on_default_hdmi()
+    """
     while True:
         if p.get_power() != "ON":
             print("POWER ON")
@@ -128,3 +144,4 @@ if __name__ == "__main__":
             p.hdmi()
         else:
             break
+    """
